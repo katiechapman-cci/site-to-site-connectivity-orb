@@ -1,6 +1,6 @@
-# Private Connectivity Orb
+# Site to Site Connectivity Orb
 
-A CircleCI orb for establishing private connectivity via circleci tunnels to enable secure access to private repositories and resources during builds.
+A CircleCI orb for establishing site to site connectivity via CircleCI tunnels to enable secure access to private repositories and resources during builds.
 
 ### Disclaimer:
 
@@ -13,44 +13,54 @@ CircleCI Labs, including this repo, is a collection of solutions developed by me
 ## Overview
 
 This orb provides commands to:
-- Set up circleci tunnels with IP policy rules for secure access
+- Set up CircleCI tunnels with IP policy rules for secure access
 - Checkout code from private repositories through the tunnel
 - Clean up tunnel resources after the build
 
 ## Prerequisites
 
-- An ngrok account with API access
-- ngrok API token stored as an environment variable (`NGROK_API_TOKEN`)
-- An IP policy ID configured in your ngrok account and stored as an environment variable (`CIRCLE_IP_POLICY_ID`)
+- An Ngrok account with API access, which is provided by CircleCI
+- Ngrok API token stored as an environment variable (`NGROK_API_TOKEN`), which is provided by CircleCI
+- An IP policy ID configured in your Ngrok account and stored as an environment variable (`IP_POLICY_ID`), which is provided by CircleCI
 
 ## Commands
 
-### setup
+### Setup
 
-Sets up an circleci tunnel by creating an IP policy rule for the current CircleCI build's IP address.
+Sets up an CircleCI tunnel by creating an IP policy rule for the current CircleCI build's IP address.
 
 **Parameters:**
-- `ngrok-api-token` (env_var_name): Environment variable containing the ngrok API token (default: `NGROK_API_TOKEN`)
-- `ip-policy-id` (env_var_name): Environment variable containing the IP policy ID for circleci tunnel (default: `CIRCLE_IP_POLICY_ID`)
-- `tcp-address` (string): TCP address for circleci tunnel (default: `"1.tcp.ngrok.io"`)
-- `tcp-port` (string): TCP port for circleci tunnel (default: `"28402"`)
+- `ngrok-api-token` (env_var_name): Name of the env var containing the Ngrok API token (default: `NGROK_API_TOKEN`)
+- `ip-policy-id` (env_var_name): Name of the env var containing the IP policy ID (default: `IP_POLICY_ID`)
+- `tunnel-address` (env_var_name): Name of the env var containing the tunnel address (default: `TUNNEL_ADDRESS`)
+- `tunnel-port` (env_var_name): Name of the env var containing the tunnel port (default: `TUNNEL_PORT`)
+- `debug` (boolean): Enable debug logging (prints the curl command), default: `false`
 
 **Exports:**
 - `REPO_URL`: SSH URL to the repository via circleci tunnel
 - `IPR_ID`: IP policy rule ID for cleanup
 
+Note on env_var_name parameters:
+- These parameters expect the NAME of an environment variable, not the value. The orb resolves the actual values at runtime via indirect expansion.
+
 ### checkout
 
 Checks out code from a private repository via the circleci tunnel.
 
-**Parameters:** None (uses environment variables set by `setup` command)
+**Parameters:**
+- `tunnel-address` (env_var_name): Name of the env var containing the tunnel address (default: `TUNNEL_ADDRESS`)
+- `tunnel-port` (env_var_name): Name of the env var containing the tunnel port (default: `TUNNEL_PORT`)
+- `git-url` (string): Repository URL (supports SSH scp-like `git@host:org/repo.git` and HTTPS/SSH URLs)
+- `checkout-folder` (string): Folder to clone the repository into (default: `~/project`)
+- `debug` (boolean): Enable debug logging (prints derived values), default: `false`
 
 ### cleanup
 
 Removes the IP policy rule created during setup to clean up tunnel access.
 
 **Parameters:**
-- `ngrok-api-token` (env_var_name): Environment variable containing the ngrok API token (default: `NGROK_API_TOKEN`)
+- `ngrok-api-token` (env_var_name): Name of the env var containing the Ngrok API token (default: `NGROK_API_TOKEN`)
+- `debug` (boolean): Enable debug logging, default: `false`
 
 ## Example Usage
 
@@ -65,12 +75,9 @@ jobs:
     docker:
       - image: cimg/base:current
     steps:
-      - circle-private-connectivity/setup:
-          ngrok-api-token: NGROK_API_TOKEN
-          ip-policy-id: CIRCLE_IP_POLICY_ID
-          tcp-address: "1.tcp.ngrok.io"
-          tcp-port: "28402"
-      - circle-private-connectivity/checkout
+      - circle-private-connectivity/setup
+      - circle-private-connectivity/checkout:
+          git-url: git@github.com:your-org/your-repo.git
       - run:
           name: Build application
           command: |

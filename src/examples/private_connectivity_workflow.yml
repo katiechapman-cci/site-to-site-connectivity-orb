@@ -12,12 +12,9 @@ usage:
       docker:
         - image: cimg/base:current
       steps:
-        - circle-private-connectivity/setup:
-            ngrok-api-token: NGROK_API_TOKEN
-            ip-policy-id: CIRCLE_IP_POLICY_ID
-            tcp-address: "1.tcp.ngrok.io"
-            tcp-port: "28402"
-        - circle-private-connectivity/checkout
+        - circle-private-connectivity/setup
+        - circle-private-connectivity/checkout:
+            git-url: << pipeline.parameters.git-url >>
         - run:
             name: Build application
             command: |
