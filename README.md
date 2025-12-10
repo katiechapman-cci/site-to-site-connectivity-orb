@@ -58,25 +58,25 @@ Removes the IP policy rule created during setup to clean up tunnel access.
 version: 2.1
 
 orbs:
-  private-connectivity: your-namespace/private-connectivity@0.0.1
+  circle-private-connectivity: your-namespace/circle-private-connectivity@0.0.1
 
 jobs:
   build-with-private-repo:
     docker:
       - image: cimg/base:current
     steps:
-      - private-connectivity/setup:
+      - circle-private-connectivity/setup:
           ngrok-api-token: NGROK_API_TOKEN
           ip-policy-id: CIRCLE_IP_POLICY_ID
           tcp-address: "1.tcp.ngrok.io"
           tcp-port: "28402"
-      - private-connectivity/checkout
+      - circle-private-connectivity/checkout
       - run:
           name: Build application
           command: |
             # Your build commands here
             echo "Building application..."
-      - private-connectivity/cleanup
+      - circle-private-connectivity/cleanup
 
 workflows:
   private-repo-workflow:
@@ -90,14 +90,14 @@ workflows:
 
 ### How to Contribute
 
-We welcome [issues](https://github.com/vjpandian/private-connectivity-orb/issues) to and [pull requests](https://github.com/vjpandian/private-connectivity-orb/pulls) against this repository!
+We welcome [issues](https://github.com/CircleCI-Labs/private-connectivity-orb/issues) to and [pull requests](https://github.com/CircleCI-Labs/private-connectivity-orb/pulls) against this repository!
 
 ### How to Publish An Update
 
 1. Merge pull requests with desired changes to the main branch.
 2. Find the current version of the orb.
-   - You can run `circleci orb info your-namespace/private-connectivity | grep "Latest"` to see the current version.
-3. Create a [new Release](https://github.com/vjpandian/private-connectivity-orb/releases/new) on GitHub.
+   - You can run `circleci orb info your-namespace/circle-private-connectivity | grep "Latest"` to see the current version.
+3. Create a [new Release](https://github.com/CircleCI-Labs/private-connectivity-orb/releases/new) on GitHub.
    - Click "Choose a tag" and create a new [semantically versioned](http://semver.org/) tag. (ex: v1.0.0)
 4. Click "Publish Release".
    - This will push a new tag and trigger your publishing pipeline on CircleCI.
