@@ -2,6 +2,14 @@
 
 A CircleCI orb for establishing private connectivity via circleci tunnels to enable secure access to private repositories and resources during builds.
 
+### Disclaimer:
+
+CircleCI Labs, including this repo, is a collection of solutions developed by members of CircleCI's Field Engineering teams through our engagement with various customer needs.
+
+    ✅ Created by engineers @ CircleCI
+    ✅ Used by real CircleCI customers
+    ❌ not officially supported by CircleCI support
+
 ## Overview
 
 This orb provides commands to:
