@@ -68,22 +68,22 @@ Removes the IP policy rule created during setup to clean up tunnel access.
 version: 2.1
 
 orbs:
-  circle-private-connectivity: your-namespace/circle-private-connectivity@0.0.1
+  site-to-site-connectivity: your-namespace/site-to-site-connectivity@0.0.1
 
 jobs:
   build-with-private-repo:
     docker:
       - image: cimg/base:current
     steps:
-      - circle-private-connectivity/setup
-      - circle-private-connectivity/checkout:
+      - site-to-site-connectivity/setup
+      - site-to-site-connectivity/checkout:
           git-url: git@github.com:your-org/your-repo.git
       - run:
           name: Build application
           command: |
             # Your build commands here
             echo "Building application..."
-      - circle-private-connectivity/cleanup
+      - site-to-site-connectivity/cleanup
 
 workflows:
   private-repo-workflow:
@@ -103,7 +103,7 @@ We welcome [issues](https://github.com/CircleCI-Labs/private-connectivity-orb/is
 
 1. Merge pull requests with desired changes to the main branch.
 2. Find the current version of the orb.
-   - You can run `circleci orb info your-namespace/circle-private-connectivity | grep "Latest"` to see the current version.
+   - You can run `circleci orb info your-namespace/site-to-site-connectivity | grep "Latest"` to see the current version.
 3. Create a [new Release](https://github.com/CircleCI-Labs/private-connectivity-orb/releases/new) on GitHub.
    - Click "Choose a tag" and create a new [semantically versioned](http://semver.org/) tag. (ex: v1.0.0)
 4. Click "Publish Release".
